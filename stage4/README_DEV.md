@@ -1,6 +1,6 @@
 # Boom Ridge — Stage 4
 
-Static canvas game. Open `index.html` from a local server (relative URLs only). Every module import and the stylesheet carry `?v=2`.
+Static canvas game. Open `index.html` from a local server (relative URLs only). Every module import and the stylesheet carry `?v=3`.
 
 ```
 python3 -m http.server 8895 --bind 127.0.0.1
@@ -112,3 +112,9 @@ Styles: `rolling`, `mountains`, `canyon`, `islands`, `spires`, and `random` (a d
 `state()` adds cash, maxHp, shield, items, upgrades, round, totalRounds, terrainStyle (resolved), matchOver, lastRoundMoney, hazardsInfo, offscreenMarker, ghostMarker, lastImpact, roller, burning per tank, taunt, tauntBox, volume, muted, taunts, reduced, handoff, lastShot, weaponStats, selfSpecial. Screen may be `store`, `pass`, `handoff`, `settings`, `howto`, or `final`.
 
 Keyboard: arrow keys step angle and power by 5, Shift+arrows by 1. The on-screen nudge buttons stay ±1.
+
+## Computer aim (v3 retune)
+
+Computer aim lives in `js/ai.js`. The computer still solves the ballistics, but for the wind it *thinks* it sees (`perceivedWind`: misreads grow with wind strength), then adds its own aiming error from the `AIM` table per difficulty: a first-shot error at a new target, a sloppy per-turn correction (can get worse or overcorrect, mostly on Easy), fresh drift each turn (no perfect memory) and hand wobble. The error memory sits on `tank.aimMem` per target and starts over when either tank moves more than 30px or the target changes. `planWeapon` / `__game.aiChoose` only peek at it. Weapon choice and buying are unchanged.
+
+`tests/t_aim.py` runs CPU-vs-still-target duels and checks shots-to-first-direct-hit: Easy avg 4–7 (median 4–7), Normal avg 3–4.2 (median 3–4), Hard avg 1.2–3.2 (median 1–3). Before v3: Easy avg 3.6 / median 2, Normal 1.6 / 1, Hard 1.2 / 1.

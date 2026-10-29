@@ -2,20 +2,20 @@ import {
   GAME_TITLE, WORLD_W, WORLD_H, SIM_DT, GRAVITY, POWER_SCALE, WIND_ACCEL,
   MAX_HP, FALL_SAFE, FALL_DPH, DPR_CAP, TANK, PALETTE,
   clamp, reducedMotion, setReducePref, makeRng,
-} from './config.js?v=2';
-import { getWeapon, cycleWeapon, weaponIds, DAMAGE } from './weapons.js?v=2';
-import * as terrain from './terrain.js?v=2';
-import { flyStep, escapeMuzzle, hitsTank } from './physics.js?v=2';
-import * as fx from './fx.js?v=2';
-import * as audio from './audio.js?v=2';
-import { createAI, planWeapon } from './ai.js?v=2';
-import * as ui from './ui.js?v=2';
+} from './config.js?v=3';
+import { getWeapon, cycleWeapon, weaponIds, DAMAGE } from './weapons.js?v=3';
+import * as terrain from './terrain.js?v=3';
+import { flyStep, escapeMuzzle, hitsTank } from './physics.js?v=3';
+import * as fx from './fx.js?v=3';
+import * as audio from './audio.js?v=3';
+import { createAI, planWeapon } from './ai.js?v=3';
+import * as ui from './ui.js?v=3';
 import {
   ECON, STARTER, emptyItems, emptyUpgrades, maxPowerOf, ownedCount, formatMoney,
   canBuy as canBuyItem, canSell as canSellItem, buy as buyItem, sell as sellItem, give,
-} from './economy.js?v=2';
-import { shopCpus, humanOrder } from './store.js?v=2';
-import { tauntsOn, setTaunts, pickLine, lineCount } from './taunts.js?v=2';
+} from './economy.js?v=3';
+import { shopCpus, humanOrder } from './store.js?v=3';
+import { tauntsOn, setTaunts, pickLine, lineCount } from './taunts.js?v=3';
 
 const canvas = document.getElementById('game');
 let ctx = canvas.getContext('2d', { alpha: false });

@@ -1,12 +1,43 @@
-import { POWER_SCALE, TANK, GRAVITY, WIND_ACCEL, clamp } from './config.js?v=2';
-import { predictImpact, escapeMuzzle } from './physics.js?v=2';
-import { getWeapon } from './weapons.js?v=2';
+import { POWER_SCALE, TANK, GRAVITY, WIND_ACCEL, clamp } from './config.js?v=3';
+import { predictImpact, escapeMuzzle } from './physics.js?v=3';
+import { getWeapon } from './weapons.js?v=3';
 
-const ERR = {
-  easy: { a: 8, p: 10 },
-  normal: { a: 3.8, p: 5 },
-  hard: { a: 1.1, p: 2 },
+/**
+ * How a computer gunner aims, per difficulty. Tune these numbers to change how
+ * fast the computer finds its range (tests/t_aim.py measures shots-to-hit).
+ *
+ * The computer still solves the ballistics, but for the wind it *thinks* it
+ * sees, then lays its own aiming error on top:
+ *  - a0 / p0      first-shot error (degrees / power) at a new target.
+ *  - fix          each new shot it corrects a random share of that error
+ *                 (below 0 it gets worse, above 1 it overcorrects past it).
+ *  - forget       fresh error added every turn (it does not remember its last
+ *                 setting perfectly), as a share of a0 / p0.
+ *  - wob          random hand wobble on every shot (degrees / power).
+ *  - windBase / windK  how badly it misreads the wind (base + share of |wind|).
+ */
+export const AIM = {
+  easy: { a0: 11, p0: 17, fix: [-0.25, 1.4], forget: 0.2, wob: [1.6, 2.4], windBase: 0.8, windK: 0.4 },
+  normal: { a0: 5, p0: 8, fix: [0.15, 1.25], forget: 0.14, wob: [1.4, 2.0], windBase: 0.5, windK: 0.35 },
+  hard: { a0: 2.4, p0: 3.6, fix: [0.45, 1.05], forget: 0.05, wob: [0.8, 1.2], windBase: 0.2, windK: 0.2 },
 };
+
+function gauss(rng) {
+  const u = Math.max(1e-6, rng());
+  const v = rng();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function skillAim(skill) {
+  return AIM[skill] || AIM.normal;
+}
+
+/** The wind the computer believes it sees this turn. Stronger wind is harder to read. */
+export function perceivedWind(wind, skill, rng) {
+  const k = skillAim(skill);
+  const w = wind || 0;
+  return w + gauss(rng) * (k.windBase + k.windK * Math.abs(w));
+}
 
 const SPECIALS = ['bigshot', 'cluster', 'dirtbomb', 'napalm', 'roller', 'mirv', 'funky', 'nuke', 'popcorn', 'magnet', 'bolt'];
 
@@ -376,16 +407,34 @@ function pickTarget(tank, tanks, selfIndex) {
   return target;
 }
 
-function applyNoise(tank, target, selfIndex, bestA, bestP, wind, heightAt, tanks, rng, skill, maxP) {
-  const e = ERR[skill] || ERR.normal;
-  let to = clamp(bestA + (rng() * 2 - 1) * e.a, 1, 179);
-  let power = clamp(bestP + (rng() * 2 - 1) * e.p, 15, maxP || 100);
-  const slipped = evalOne(tank, target, selfIndex, to, power, wind, heightAt, tanks);
-  if (slipped < -70) {
-    const keep = skill === 'easy' ? 0.42 : skill === 'normal' ? 0.22 : 0.08;
-    to = clamp(bestA * (1 - keep) + to * keep, 1, 179);
-    power = clamp(bestP * (1 - keep) + power * keep, 15, maxP || 100);
+/**
+ * Lay this computer's aiming error on top of the solved shot.
+ * Memory lives on the tank (tank.aimMem) and is per target; it starts over when
+ * either tank moves or the computer picks someone else. commit=false peeks
+ * without moving the memory on (used by the weapon preview).
+ */
+function applyNoise(tank, target, selfIndex, bestA, bestP, wind, heightAt, tanks, rng, skill, maxP, commit = true) {
+  const k = skillAim(skill);
+  let mem = tank.aimMem;
+  const fresh = !mem || mem.target !== target || mem.skill !== skill
+    || Math.abs(mem.sx - tank.x) > 30 || Math.abs(mem.tx - target.x) > 30;
+  let ea;
+  let ep;
+  if (fresh) {
+    ea = gauss(rng) * k.a0;
+    ep = gauss(rng) * k.p0;
+  } else {
+    // Sloppy correction from last turn: sometimes too little, sometimes too much.
+    const f = k.fix[0] + rng() * (k.fix[1] - k.fix[0]);
+    const g = k.fix[0] + rng() * (k.fix[1] - k.fix[0]);
+    ea = mem.ea * (1 - f) + gauss(rng) * k.a0 * k.forget;
+    ep = mem.ep * (1 - g) + gauss(rng) * k.p0 * k.forget;
   }
+  if (commit) {
+    tank.aimMem = { target, skill, sx: tank.x, tx: target.x, ea, ep, n: fresh ? 1 : mem.n + 1 };
+  }
+  const to = clamp(bestA + ea + gauss(rng) * k.wob[0], 1, 179);
+  const power = clamp(bestP + ep + gauss(rng) * k.wob[1], 15, maxP || 100);
   return { angle: to, power };
 }
 
@@ -432,8 +481,9 @@ export function planWeapon(ctx) {
   if (!target) {
     return { weapon: 'basic', reason: 'no target', safe: true, angle: tank.angle, power: tank.power, laser: false, announce: '' };
   }
-  const found = runSearch(tank, target, selfIndex, wind, heightAt, tanks, maxP);
-  const posed = applyNoise(tank, target, selfIndex, found.bestA, found.bestP, wind, heightAt, tanks, rng, skill, maxP);
+  const seenWind = perceivedWind(wind, skill, rng);
+  const found = runSearch(tank, target, selfIndex, seenWind, heightAt, tanks, maxP);
+  const posed = applyNoise(tank, target, selfIndex, found.bestA, found.bestP, wind, heightAt, tanks, rng, skill, maxP, false);
   const impact = predictStandard(tank, posed.angle, posed.power, wind, heightAt, tanks, selfIndex);
   const picked = scoreWeapons({
     tank, tanks, selfIndex, target, impact, wind, heightAt, rng, skill,
@@ -472,6 +522,7 @@ export function createAI() {
         selfIndex,
         target,
         wind,
+        seenWind: perceivedWind(wind, skill, rng),
         heightAt,
         rng,
         skill,
@@ -502,7 +553,7 @@ export function createAI() {
         n += 1;
         const s = evalOne(
           jobRef.tank, jobRef.target, jobRef.selfIndex,
-          angle, power, jobRef.wind, jobRef.heightAt, jobRef.tanks,
+          angle, power, jobRef.seenWind, jobRef.heightAt, jobRef.tanks,
         );
         if (s > jobRef.best) {
           jobRef.best = s;

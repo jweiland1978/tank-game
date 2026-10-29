@@ -1,5 +1,5 @@
-import { clamp } from './config.js?v=2';
-import { getWeapon, WEAPONS } from './weapons.js?v=2';
+import { clamp } from './config.js?v=3';
+import { getWeapon, WEAPONS } from './weapons.js?v=3';
 
 export const ECON = {
   cashLow: 2500,

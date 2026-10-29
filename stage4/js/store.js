@@ -1,4 +1,4 @@
-import { cpuShop } from './economy.js?v=2';
+import { cpuShop } from './economy.js?v=3';
 
 /** CPUs buy immediately. Returns short lines for the store subtitle. */
 export function shopCpus(tanks, rng) {
