@@ -4,7 +4,8 @@ A turn-based artillery tank game for the browser. Set your angle and power, read
 
 **These are test builds.** It's not finished.
 
-- **Stage 2 (newest):** https://jweiland1978.github.io/tank-game/stage2/index.html?v=1 — money for hits, kills and wins, a store between rounds (napalm, nuke, roller, MIRV, funky bomb and more), shields, parachutes, fuel, laser sight, armor and barrel upgrades, multi-round matches with final standings, and five terrain styles (rolling hills, mountains, canyon, islands, spires).
+- **Stage 3 (newest):** https://jweiland1978.github.io/tank-game/stage3/index.html?v=1 — deadlier napalm, tank taunts, three new weapons (Popcorn Bomb, Dirt Magnet, Lightning Rod), richer sound with a volume control, bigger touch controls with fine aim/power nudges, a pass-the-device screen for hot-seat play, and a store that fits on a phone.
+- **Stage 2:** https://jweiland1978.github.io/tank-game/stage2/index.html?v=1 — money for hits, kills and wins, a store between rounds (napalm, nuke, roller, MIRV, funky bomb and more), shields, parachutes, fuel, laser sight, armor and barrel upgrades, multi-round matches with final standings, and five terrain styles (rolling hills, mountains, canyon, islands, spires).
 - **Stage 1:** https://jweiland1978.github.io/tank-game/stage1/index.html?v=1 — the core game: destructible hills, wind, 2 to 4 tanks, computer players.
 
 Works offline after loading, with no ads, tracking or outside requests. Sounds are generated in the browser.
