@@ -1,6 +1,6 @@
-import { POWER_SCALE, TANK, GRAVITY, WIND_ACCEL, clamp } from './config.js?v=1';
-import { predictImpact, escapeMuzzle } from './physics.js?v=1';
-import { getWeapon } from './weapons.js?v=1';
+import { POWER_SCALE, TANK, GRAVITY, WIND_ACCEL, clamp } from './config.js?v=2';
+import { predictImpact, escapeMuzzle } from './physics.js?v=2';
+import { getWeapon } from './weapons.js?v=2';
 
 const ERR = {
   easy: { a: 8, p: 10 },

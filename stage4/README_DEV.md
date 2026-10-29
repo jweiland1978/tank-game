@@ -1,12 +1,12 @@
-# Iron Rig — Stage 4
+# Boom Ridge — Stage 4
 
-Static canvas game. Open `index.html` from a local server (relative URLs only). Every module import and the stylesheet carry `?v=1`.
+Static canvas game. Open `index.html` from a local server (relative URLs only). Every module import and the stylesheet carry `?v=2`.
 
 ```
 python3 -m http.server 8895 --bind 127.0.0.1
 ```
 
-`GAME_TITLE` in `js/config.js` stays `Iron Rig`. The title screen keeps the small "Made with AI help" note.
+`GAME_TITLE` in `js/config.js` is `Boom Ridge`. localStorage keys keep the old `ironrig-` prefix so saved settings carry over. The title screen keeps the small "Made with AI help" note.
 
 ## Layout
 

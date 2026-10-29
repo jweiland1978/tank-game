@@ -1,4 +1,4 @@
-export const GAME_TITLE = 'Iron Rig';
+export const GAME_TITLE = 'Boom Ridge';
 
 export const WORLD_W = 1600;
 export const WORLD_H = 900;

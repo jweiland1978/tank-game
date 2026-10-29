@@ -1,4 +1,4 @@
-import { WORLD_W, WORLD_H } from './config.js?v=1';
+import { WORLD_W, WORLD_H } from './config.js?v=2';
 
 let heights = new Float64Array(WORLD_W);
 let scorch = new Uint8Array(WORLD_W);
