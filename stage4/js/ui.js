@@ -1,5 +1,5 @@
-import { GAME_TITLE, PALETTE } from './config.js?v=3';
-import { formatMoney, listings } from './economy.js?v=3';
+import { GAME_TITLE, PALETTE } from './config.js?v=4';
+import { formatMoney, listings } from './economy.js?v=4';
 
 const $ = (id) => document.getElementById(id);
 

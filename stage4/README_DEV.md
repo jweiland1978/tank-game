@@ -1,6 +1,6 @@
 # Boom Ridge — Stage 4
 
-Static canvas game. Open `index.html` from a local server (relative URLs only). Every module import and the stylesheet carry `?v=3`.
+Static canvas game. Open `index.html` from a local server (relative URLs only). Every module import and the stylesheet carry `?v=4`.
 
 ```
 python3 -m http.server 8895 --bind 127.0.0.1
@@ -65,7 +65,7 @@ CPU shop: Easy buys one cheap bundle (dirt bomb, fuel, laser, parachute, big sho
 | napalm | $6,000 ×2 | ~32 pooling fire blobs, deadly on a direct hit |
 | roller | $3,500 ×3 | rolls downhill, fuse 4s |
 | mirv | $9,000 ×2 | 6 medium blasts, spread 168 |
-| funky | $7,000 ×2 | 7 bouncing rainbow bombs |
+| funky (shown as Chaos Bomb) | $7,000 ×2 | 7 bouncing rainbow bombs |
 | nuke | $20,000 ×1 | radius 280, max carry 3 |
 | popcorn | $2,500 ×3 | hopping kernels that pop |
 | magnet | $4,500 ×2 | sucks dirt, yanks tanks, dumps a mound |

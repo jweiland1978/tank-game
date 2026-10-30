@@ -1,6 +1,6 @@
-import { POWER_SCALE, TANK, GRAVITY, WIND_ACCEL, clamp } from './config.js?v=3';
-import { predictImpact, escapeMuzzle } from './physics.js?v=3';
-import { getWeapon } from './weapons.js?v=3';
+import { POWER_SCALE, TANK, GRAVITY, WIND_ACCEL, clamp } from './config.js?v=4';
+import { predictImpact, escapeMuzzle } from './physics.js?v=4';
+import { getWeapon } from './weapons.js?v=4';
 
 /**
  * How a computer gunner aims, per difficulty. Tune these numbers to change how

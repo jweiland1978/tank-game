@@ -1,5 +1,5 @@
-import { MAX_PARTICLES, reducedMotion } from './config.js?v=3';
-import { heightAt } from './terrain.js?v=3';
+import { MAX_PARTICLES, reducedMotion } from './config.js?v=4';
+import { heightAt } from './terrain.js?v=4';
 
 const parts = [];
 const booms = [];

@@ -1,4 +1,4 @@
-import { GRAVITY, WIND_ACCEL, WORLD_W, TANK } from './config.js?v=3';
+import { GRAVITY, WIND_ACCEL, WORLD_W, TANK } from './config.js?v=4';
 
 /** One fixed integration step. Mutates body {x,y,vx,vy,vyPrev,age}. */
 export function flyStep(b, dt, wind) {

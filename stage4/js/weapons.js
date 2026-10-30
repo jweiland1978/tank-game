@@ -186,7 +186,7 @@ export const WEAPONS = [
   },
   {
     id: 'funky',
-    name: 'Funky Bomb',
+    name: 'Chaos Bomb',
     price: 7000,
     bundle: 2,
     max: 10,
